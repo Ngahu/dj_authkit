@@ -33,13 +33,16 @@
 **using**  `pip`
 ```
 pip install git+https://github.com/Shopyangu-engineering/shopyangu_payments.git#egg=shopyangu_payments
+pip install git+https://github.com/Ngahu/dj_authkit.git#egg=dj_authkit
+
+
 
 ```
 
  **using** `uv`
 
 ```
-uv add git+https://github.com/Shopyangu-engineering/shopyangu_payments.git#egg=shopyangu_payments
+uv add git+https://github.com/Ngahu/dj_authkit.git#egg=dj_authkit
 ```
 
 

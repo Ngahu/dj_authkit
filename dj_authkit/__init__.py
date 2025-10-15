@@ -38,6 +38,7 @@ DJ_APPS = [
 
 AUTHKIT_APPS = [
     "dj_authkit.config.DjAuthkit",
+    "dj_authkit.apps.accounts",
 ]
 
 
@@ -46,5 +47,7 @@ THIRDPARY_APPS = []
 
 DJ_AUTHKIT_APPS = [*AUTHKIT_APPS, *THIRDPARY_APPS]
 
-
 INSTALLED_APPS = [*DJ_APPS, *DJ_AUTHKIT_APPS]
+
+
+AUTH_USER_MODEL = "accounts.User"

@@ -1,9 +1,9 @@
 <p align="left"><a href="https://www.shopyangu.com/" target="_blank"><img src="assets/logo.png" width="140"></a></p>
 
 
-# Shopyangu Payments :dollar: :pound: :yen: :euro:
+# Dj Authkit (dj_authkit) :lock:
 
-> Payment Library For Most Public Payment API's in Kenya and hopefully Africa.
+> A Django app that provides a customizable, pluggable user authentication and management system.
 
 
 ## Table of contents
@@ -32,7 +32,6 @@
 
 **using**  `pip`
 ```
-pip install git+https://github.com/Shopyangu-engineering/shopyangu_payments.git#egg=shopyangu_payments
 pip install git+https://github.com/Ngahu/dj_authkit.git#egg=dj_authkit
 
 

@@ -3,7 +3,7 @@ import sys
 
 from setuptools import find_packages, setup
 
-from shopyangu_commerce import get_version
+from dj_authkit import get_version
 
 long_description = open("README.md").read()
 

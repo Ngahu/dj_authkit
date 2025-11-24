@@ -1,5 +1,2 @@
 include *.rst
 include LICENSE
-
-recursive-include commerce_hub/templates *
-recursive-include commerce_hub/static *

@@ -39,6 +39,7 @@ DJ_APPS = [
 AUTHKIT_APPS = [
     "dj_authkit.config.DjAuthkit",
     "dj_authkit.apps.accounts",
+    "dj_authkit.apps.account_invitations",
 ]
 
 
@@ -51,3 +52,5 @@ INSTALLED_APPS = [*DJ_APPS, *DJ_AUTHKIT_APPS]
 
 
 DJ_AUTHKIT_AUTH_USER_MODEL = "accounts.User"
+
+DJ_AUTHKIT_ACCOUNT_INVITATION_EXPIRY_HOURS = 24

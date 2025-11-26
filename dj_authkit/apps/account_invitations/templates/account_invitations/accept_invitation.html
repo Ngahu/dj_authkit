@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accept Invitation</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f6fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 2rem 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        form p {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        button {
+            margin-top: 1rem;
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            background: #4a77f3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        button:hover {
+            background: #345cd6;
+        }
+
+        /* Messages container */
+        .messages {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        /* Alert styles */
+        .alert-subtle-info {
+            background: #e8f1ff;
+            border: 1px solid #bcd4ff;
+            color: #2c4a7a;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .alert-subtle-success {
+            background: #e9f7ec;
+            border: 1px solid #bceac2;
+            color: #276738;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .alert-subtle-warning {
+            background: #fff8e5;
+            border: 1px solid #ffe6a7;
+            color: #7a5a12;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .alert-subtle-danger {
+            background: #ffeded;
+            border: 1px solid #ffb9b9;
+            color: #7a1f1f;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Form error styling */
+        ul.errorlist {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0 0 1rem 0;
+        }
+
+        ul.errorlist li {
+            background: #ffeded;
+            border: 1px solid #ffb9b9;
+            color: #7a1f1f;
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        ul.errorlist.nonfield li {
+            background: #ffecec;
+            border-color: #f5bcbc;
+            color: #7a1f1f;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Django messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if invalid %}
+        <h2>Invitation Error</h2>
+        {% if error_message %}
+        <p class="alert-subtle-danger">{{ error_message }}</p>
+        {% endif %}
+        {% else %}
+        <h2>Accept Invitation</h2>
+
+        <!-- Non-field form errors -->
+        {% if form.non_field_errors %}
+        <ul class="errorlist nonfield">
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Field errors inline -->
+            {% for field in form %}
+            <p>
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+            <ul class="errorlist">
+                {% for error in field.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            </p>
+            {% endfor %}
+
+            <button type="submit">Create Account</button>
+        </form>
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>

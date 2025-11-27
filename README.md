@@ -1,6 +1,3 @@
-<p align="left"><a href="https://www.shopyangu.com/" target="_blank"><img src="assets/logo.png" width="140"></a></p>
-
-
 # Dj Authkit (dj_authkit) :lock:
 
 > A Django app that provides a customizable, pluggable user authentication and management system.

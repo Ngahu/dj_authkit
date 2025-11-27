@@ -11,6 +11,10 @@ from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
+INVITE_EXPIRY_HOURS = getattr(
+    settings, "DJ_AUTHKIT_ACCOUNT_INVITATION_EXPIRY_HOURS", 24
+)
+
 
 class AccountInvitation(models.Model):
     class Status(models.TextChoices):
@@ -81,7 +85,7 @@ class AccountInvitation(models.Model):
         email: str,
         role: Group,
         invited_by: Union[User, None] = None,
-        expiry_hours: int = settings.DJ_AUTHKIT_ACCOUNT_INVITATION_EXPIRY_HOURS,
+        expiry_hours: int = INVITE_EXPIRY_HOURS,
     ):
         with transaction.atomic():
             # Deactivate existing pending / valid invitations

@@ -1,3 +1,4 @@
+import structlog
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
@@ -15,6 +16,7 @@ from .exceptions import (
 from django.db import transaction
 
 User = get_user_model()
+logger = structlog.get_logger()
 
 
 @dataclass
@@ -82,7 +84,7 @@ class AccountInvitationService:
     @staticmethod
     def cleanup_expired_invitations() -> int:
         """
-        Marks all expired pending invitations as EXPIRED.
+        Marks all expired pending invitations as EXPIRED and deletes EXPIRED invitations.
         Returns number updated.
         """
         now = timezone.now()
@@ -92,7 +94,17 @@ class AccountInvitationService:
             expires_at__lt=now,
         )
         count = qs.update(status=AccountInvitation.Status.EXPIRED)
-        return count
+
+        logger.info(f"expired_invitations count is {count}")
+
+        to_delete = AccountInvitation.objects.filter(
+            status=AccountInvitation.Status.EXPIRED
+        )
+        logger.info(f"expired_invitations to_delete count is {to_delete.count()}")
+
+        to_delete.delete()
+
+        return True
 
     def send_invitation_email(self, *, invitation: AccountInvitation, site_url: str):
         """

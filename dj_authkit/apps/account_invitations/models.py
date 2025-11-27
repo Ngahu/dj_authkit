@@ -8,6 +8,8 @@ from .tokens import generate_invitation_token
 from django.db import transaction
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+import uuid
 
 User = get_user_model()
 
@@ -21,6 +23,7 @@ class AccountInvitation(models.Model):
         PENDING = "pending", "Pending"
         ACCEPTED = "accepted", "Accepted"
         EXPIRED = "expired", "Expired"
+        CANCELLED = "cancelled", _("Cancelled")
 
     email = models.EmailField(unique=False, blank=True, null=True)
     phone_number = models.CharField(max_length=50, blank=True, null=True)
@@ -47,6 +50,8 @@ class AccountInvitation(models.Model):
         default=Status.PENDING,
     )
 
+    invitation_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
     class Meta:
         verbose_name = "Account Invitation"
         verbose_name_plural = "Account Invitations"
@@ -60,9 +65,6 @@ class AccountInvitation(models.Model):
             raise ValidationError(
                 "Please provide only one contact method (Email OR Phone)."
             )
-
-        # if self.email and User.objects.filter(email=self.email).exists():
-        #     raise ValidationError("A user with this email already exists.")
 
         if self.email:
             qs = User.objects.filter(email=self.email)
@@ -117,12 +119,7 @@ class AccountInvitation(models.Model):
     @property
     def is_valid(self) -> bool:
         """Invitation is usable only if not expired and not yet accepted."""
-        print(self.status == self.Status.PENDING, "stat")
-        print(self.is_expired, "is_expired")
-        print(
-            self.status == self.Status.PENDING and timezone.now() < self.expires_at,
-            "TT",
-        )
+
         return self.status == self.Status.PENDING and timezone.now() < self.expires_at
 
     @property

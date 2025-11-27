@@ -29,10 +29,8 @@ class AccountInvitationService:
     No invitation logic is duplicated here — creation is delegated to the model.
     """
 
-    site_url: str = "shop.com"
-    # site_url: str = settings.SITE_URL
     email_sender: str = settings.DEFAULT_FROM_EMAIL
-    accept_url_name: str = "account_invitations:accept"
+    accept_url_name: str = "account_invitations:accept_invitation"
 
     @staticmethod
     def create_invitation(*, email: str, role, invited_by=None, expiry_hours: int = 24):
@@ -96,13 +94,13 @@ class AccountInvitationService:
         count = qs.update(status=AccountInvitation.Status.EXPIRED)
         return count
 
-    def send_invitation_email(self, invitation: AccountInvitation):
+    def send_invitation_email(self, *, invitation: AccountInvitation, site_url: str):
         """
         Sends the invitation email to the invited user.
         """
-        accept_link = self.site_url + reverse(
-            self.accept_url_name, kwargs={"token": invitation.token}
-        )
+        accept_url = reverse(self.accept_url_name, kwargs={"token": invitation.token})
+
+        accept_link = site_url + accept_url
 
         message = (
             f"You've been invited to create an account with role '{invitation.role.name}'.\n\n"
@@ -117,6 +115,31 @@ class AccountInvitationService:
             from_email=self.email_sender,
             recipient_list=[invitation.email],
         )
+
+    def invite(
+        self,
+        *,
+        email: str,
+        role,
+        site_url: str,
+        invited_by=None,
+        expiry_hours: int = 24,
+        **kwargs,
+    ):
+        """Create a new invitation to given user and send the invitation to them.
+
+        Args:
+            email (str): _description_
+            role (_type_): _description_
+            site_url (str): _description_
+            invited_by (_type_, optional): _description_. Defaults to None.
+            expiry_hours (int, optional): _description_. Defaults to 24.
+        """
+        new_invite = self.create_invitation(
+            email=email, role=role, invited_by=invited_by, expiry_hours=expiry_hours
+        )
+        if new_invite:
+            self.send_invitation_email(invitation=new_invite, site_url=site_url)
 
     @staticmethod
     def _get_invitation(token: str) -> AccountInvitation:

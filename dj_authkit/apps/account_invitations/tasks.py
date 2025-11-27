@@ -27,5 +27,13 @@ def send_invitation_notification(self, invitation_id: str, site_url: str):
     try:
         invite = AccountInvitation.objects.get(invitation_id=invitation_id)
 
+        if invite.email:
+            AccountInvitationService().send_invitation_email(
+                invitation=invite, site_url=site_url
+            )
+            logger.info(
+                "send_invitation_notification.email", invitation_id=invitation_id
+            )
+
     except Exception as er:
         logger.warning("send_invitation_notification.error", error=er)

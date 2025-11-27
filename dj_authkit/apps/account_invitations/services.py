@@ -128,31 +128,6 @@ class AccountInvitationService:
             recipient_list=[invitation.email],
         )
 
-    def invite(
-        self,
-        *,
-        email: str,
-        role,
-        site_url: str,
-        invited_by=None,
-        expiry_hours: int = 24,
-        **kwargs,
-    ):
-        """Create a new invitation to given user and send the invitation to them.
-
-        Args:
-            email (str): _description_
-            role (_type_): _description_
-            site_url (str): _description_
-            invited_by (_type_, optional): _description_. Defaults to None.
-            expiry_hours (int, optional): _description_. Defaults to 24.
-        """
-        new_invite = self.create_invitation(
-            email=email, role=role, invited_by=invited_by, expiry_hours=expiry_hours
-        )
-        if new_invite:
-            self.send_invitation_email(invitation=new_invite, site_url=site_url)
-
     @staticmethod
     def _get_invitation(token: str) -> AccountInvitation:
         try:

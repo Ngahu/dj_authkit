@@ -144,7 +144,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             return full_name.strip()
 
         else:
-            return self.get_short_name()
+            return self.get_short_name
 
     @property
     def get_email(self) -> str | None:

@@ -66,12 +66,12 @@ class AccountInvitation(models.Model):
                 "Please provide only one contact method (Email OR Phone)."
             )
 
-        if self.email:
-            qs = User.objects.filter(email=self.email)
-            if self.pk:
-                qs = qs.exclude(pk=self.pk)
-            if qs.exists():
-                raise ValidationError("A user with this email already exists.")
+        # if self.email:
+        #     qs = User.objects.filter(email=self.email)
+        #     if self.pk:
+        #         qs = qs.exclude(pk=self.pk)
+        #     if qs.exists():
+        #         raise ValidationError("A user with this email already exists.")
 
     def save(self, *args, **kwargs):
         self.full_clean()

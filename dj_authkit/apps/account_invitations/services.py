@@ -32,7 +32,7 @@ class AccountInvitationService:
     """
 
     email_sender: str = settings.DEFAULT_FROM_EMAIL
-    accept_url_name: str = "account_invitations:accept_invitation"
+    accept_url_name: str = "dj_authkit:account_invitations:accept_invitation"
 
     @staticmethod
     def create_invitation(*, email: str, role, invited_by=None, expiry_hours: int = 24):

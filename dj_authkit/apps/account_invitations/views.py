@@ -1,22 +1,24 @@
-from django.shortcuts import redirect
-from django.views.generic import FormView
+from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
-from .forms import AcceptInvitationForm
-from .services import AccountInvitationService
-from .models import AccountInvitation
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import FormView
+
 from .exceptions import (
-    InvitationExpiredError,
     InvitationAlreadyAcceptedError,
+    InvitationExpiredError,
     InvitationNotFoundError,
 )
-from django.urls import reverse_lazy
+from .forms import AcceptInvitationForm
+from .models import AccountInvitation
+from .services import AccountInvitationService
 
 
 class AcceptInvitationView(FormView):
     template_name = "account_invitations/accept_invitation.html"
     form_class = AcceptInvitationForm
-    success_url = reverse_lazy("dashboard/login/")
+    success_url = reverse_lazy(settings.LOGIN_URL)
     service_class = AccountInvitationService
     extra_context = {
         "title": "Accept Invitation",

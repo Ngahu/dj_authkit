@@ -14,7 +14,6 @@ if sys.argv[-1] == "publish":
 
 setup(
     name="dj_authkit",
-    # package_dir={"": "."},
     packages=find_packages(where="."),
     version=get_version(),
     description="A Django app that provides a customizable, pluggable user authentication and management system.",

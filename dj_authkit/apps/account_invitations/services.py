@@ -59,10 +59,10 @@ class AccountInvitationService:
         Accept an invitation, create user, assign role, mark accepted.
         """
         if extra_user_fields is None:
-            extra_user_fields = {
-                "is_active": True,
-                "user_type": User.UserTypesChoices.STAFF,
-            }
+            extra_user_fields = {}
+
+        extra_user_fields.setdefault("is_active", True)
+        extra_user_fields.setdefault("user_type", User.UserTypesChoices.STAFF)
 
         invitation = cls._get_invitation(token)
         cls._validate_invitation(invitation)

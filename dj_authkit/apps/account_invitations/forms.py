@@ -4,6 +4,9 @@ from django.core.exceptions import ValidationError
 
 
 class AcceptInvitationForm(forms.Form):
+    first_name = forms.CharField(max_length=100, required=True, label="First Name")
+    last_name = forms.CharField(max_length=100, required=True, label="Last Name")
+
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
         label="Password",

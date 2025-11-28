@@ -101,10 +101,16 @@ class AcceptInvitationView(FormView):
     def form_valid(self, form):
         service = self.service_class()
 
+        extra_data = {
+            "first_name": form.cleaned_data.get("first_name"),
+            "last_name": form.cleaned_data.get("last_name"),
+        }
+
         try:
             user = service.accept_invitation(
                 token=self.invitation.token,
                 password=form.cleaned_data["password"],
+                extra_user_fields=extra_data,
             )
 
             print(user, "user")

@@ -7,8 +7,10 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.apps import apps
 import importlib
 import uuid
+import hashlib
 from django.utils import timezone
 from dj_authkit.apps.accounts.managers import UserManager
+from django.utils.functional import cached_property
 
 
 if apps.is_installed("rest_framework.authtoken"):
@@ -127,12 +129,22 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
 
+    @property
     def get_full_name(self):
-        """
-        Return the first_name plus the last_name, with a space in between.
-        """
-        full_name = "%s %s" % (self.first_name, self.last_name)
-        return full_name.strip()
+        if self.first_name and self.last_name:
+            full_name = "%s %s" % (self.first_name, self.last_name)
+            return full_name.strip()
+
+        elif self.first_name:
+            full_name = "%s" % (self.first_name)
+            return full_name.strip()
+
+        elif self.last_name:
+            full_name = "%s" % (self.last_name)
+            return full_name.strip()
+
+        else:
+            return self.get_short_name()
 
     @property
     def get_email(self) -> str | None:
@@ -162,6 +174,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_customer(self):
         return self.user_type == self.UserTypesChoices.CUSTOMER
 
+    @property
+    def get_short_name(self):
+        # The user is identified by their email or phone number
+        return self.get_email or self.get_phone_number
+
     def has_perm(self, perm, obj=None):
         # Does the user have a specific permission?
         # Simplest possible answer: Yes, always
@@ -179,6 +196,36 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_admin(self):
         return self.admin
+
+    @cached_property
+    def get_roles_with_color(self):
+        """
+        Returns a list of dicts:
+        [
+            {"name": "Admin", "color": "#a1b2c3"},
+            {"name": "Editor", "color": "#d4e5f6"},
+            ...
+        ]
+        Color is a hex string deterministically generated from the role name.
+        """
+
+        def get_color_for_role(role_name):
+            # Hash the role name to an integer
+            h = hashlib.md5(role_name.encode()).hexdigest()
+            # Use first 6 chars of hash as hex color code
+            return f"#{h[:6]}"
+
+        colored_roles = []
+        for group in self.groups.all():
+            color = get_color_for_role(group.name)
+            colored_roles.append(
+                {
+                    "name": group.name,
+                    "color": color,
+                }
+            )
+
+        return colored_roles
 
     def activate(self):
         self.is_active = True

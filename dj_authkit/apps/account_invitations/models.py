@@ -1,15 +1,16 @@
-from django.db import models
-from django.contrib.auth.models import Group
-from typing import Union
-from django.contrib.auth import get_user_model
-from django.utils import timezone
-from datetime import timedelta
-from .tokens import generate_invitation_token
-from django.db import transaction
-from django.conf import settings
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
 import uuid
+from datetime import timedelta
+from typing import Union
+
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
+from django.db import models, transaction
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
+from .tokens import generate_invitation_token
 
 User = get_user_model()
 
@@ -35,12 +36,20 @@ class AccountInvitation(models.Model):
         blank=True,
         related_name="sent_invitations",
     )
+    cancelled_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="cancelled_invitations",
+    )
 
     role = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(null=True, blank=True)
     accepted_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     # is_accepted = models.BooleanField(default=False)
 
@@ -65,13 +74,6 @@ class AccountInvitation(models.Model):
             raise ValidationError(
                 "Please provide only one contact method (Email OR Phone)."
             )
-
-        # if self.email:
-        #     qs = User.objects.filter(email=self.email)
-        #     if self.pk:
-        #         qs = qs.exclude(pk=self.pk)
-        #     if qs.exists():
-        #         raise ValidationError("A user with this email already exists.")
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -143,3 +145,10 @@ class AccountInvitation(models.Model):
         self.save(update_fields=["status"])
 
     mark_expired.alters_data = True
+
+    def mark_cancelled(self, cancelled_by: User):
+        self.status = self.Status.CANCELLED
+        self.cancelled_by = cancelled_by
+        self.save(update_fields=["status", "cancelled_by"])
+
+    mark_cancelled.alters_data = True

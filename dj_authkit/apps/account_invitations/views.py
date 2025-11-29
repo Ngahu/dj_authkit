@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
 from django.views.generic import FormView
 
 from .exceptions import (
@@ -18,7 +17,7 @@ from .services import AccountInvitationService
 class AcceptInvitationView(FormView):
     template_name = "account_invitations/accept_invitation.html"
     form_class = AcceptInvitationForm
-    success_url = reverse_lazy(settings.LOGIN_URL)
+    success_url = settings.LOGIN_URL
     service_class = AccountInvitationService
     extra_context = {
         "title": "Accept Invitation",

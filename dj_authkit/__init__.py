@@ -2,7 +2,7 @@
 
 __version_info__ = {
     "major": 0,
-    "minor": 8,
+    "minor": 9,
     "micro": 0,
     "releaselevel": "rc",
     "serial": 1,

@@ -1,19 +1,21 @@
+from dataclasses import dataclass
+from typing import Dict, Optional
+
 import structlog
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.db import transaction
+from django.urls import reverse
 from django.utils import timezone
 
 from dj_authkit.apps.account_invitations.models import AccountInvitation
-from dataclasses import dataclass
-from typing import Optional, Dict
-from django.conf import settings
-from django.core.mail import send_mail
-from django.urls import reverse
+
 from .exceptions import (
-    InvitationExpiredError,
     InvitationAlreadyAcceptedError,
+    InvitationExpiredError,
     InvitationNotFoundError,
 )
-from django.db import transaction
 
 User = get_user_model()
 logger = structlog.get_logger()

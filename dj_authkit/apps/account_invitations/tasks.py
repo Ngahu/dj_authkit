@@ -1,8 +1,10 @@
 from __future__ import absolute_import, unicode_literals
+
 import structlog
 from celery import shared_task
-from dj_authkit.apps.account_invitations.services import AccountInvitationService
+
 from dj_authkit.apps.account_invitations.models import AccountInvitation
+from dj_authkit.apps.account_invitations.services import AccountInvitationService
 
 logger = structlog.get_logger()
 
@@ -23,13 +25,13 @@ def cleanup_expired_invitations(self):
     name="dj_authkit.apps.account_invitations.tasks.send_invitation_notification",
     bind=True,
 )
-def send_invitation_notification(self, invitation_id: str, site_url: str):
+def send_invitation_notification(self, invitation_id: str, invitation_link: str):
     try:
         invite = AccountInvitation.objects.get(invitation_id=invitation_id)
 
         if invite.email:
             AccountInvitationService().send_invitation_email(
-                invitation=invite, site_url=site_url
+                invitation=invite, invitation_link=invitation_link
             )
             logger.info(
                 "send_invitation_notification.email", invitation_id=invitation_id

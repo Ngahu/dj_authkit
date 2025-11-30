@@ -108,18 +108,17 @@ class AccountInvitationService:
 
         return True
 
-    def send_invitation_email(self, *, invitation: AccountInvitation, site_url: str):
+    def send_invitation_email(
+        self, *, invitation: AccountInvitation, invitation_link: str
+    ):
         """
         Sends the invitation email to the invited user.
         """
-        accept_url = reverse(self.accept_url_name, kwargs={"token": invitation.token})
-
-        accept_link = site_url + accept_url
 
         message = (
             f"You've been invited to create an account with role '{invitation.role.name}'.\n\n"
             f"Click the link below to accept the invitation:\n"
-            f"{accept_link}\n\n"
+            f"{invitation_link}\n\n"
             f"This link expires on {invitation.expires_at}."
         )
 

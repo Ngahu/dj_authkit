@@ -99,10 +99,20 @@ class AccountInvitationService:
 
         logger.info(f"expired_invitations count is {count}")
 
+        return True
+
+    @staticmethod
+    def cleanup_invitations() -> int:
+        """
+        Deletes EXPIRED invitations.
+        """
+
         to_delete = AccountInvitation.objects.filter(
             status=AccountInvitation.Status.EXPIRED
         )
-        logger.info(f"expired_invitations to_delete count is {to_delete.count()}")
+        logger.info(
+            f"expired_invitations to_delete count is {to_delete.count()} . Deleting ..."
+        )
 
         to_delete.delete()
 

@@ -240,6 +240,10 @@ class GroupProfile(models.Model):
         Group, on_delete=models.CASCADE, related_name="profile", primary_key=True
     )
     description = models.TextField(blank=True, null=True)
+    created_on = models.DateTimeField(_("Created On"), default=timezone.now)
+    last_updated_at = models.DateTimeField(
+        _("Date updated"), auto_now=True, db_index=True
+    )
 
     def __str__(self):
         return f"Profile of {self.group.name}"

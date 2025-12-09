@@ -1,9 +1,9 @@
 # Use 'alpha', 'beta', 'rc' or 'final' as the 4th element to indicate release type.
 
 __version_info__ = {
-    "major": 0,
-    "minor": 9,
-    "micro": 4,
+    "major": 1,
+    "minor": 0,
+    "micro": 0,
     "releaselevel": "rc",
     "serial": 1,
 }

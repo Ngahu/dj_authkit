@@ -183,12 +183,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     def has_perm(self, perm, obj=None):
         # Does the user have a specific permission?
         # Simplest possible answer: Yes, always
-        return True
+        return super().has_perm(perm, obj)
 
     def has_module_perms(self, app_label):
         # "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
-        return True
+        return super().has_module_perms(app_label)
 
     @property
     def get_user_id(self):

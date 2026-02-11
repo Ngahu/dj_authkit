@@ -245,5 +245,21 @@ class GroupProfile(models.Model):
         _("Date updated"), auto_now=True, db_index=True
     )
 
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_group_profiles",
+    )
+
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="updated_group_profiles",
+    )
+
     def __str__(self):
         return f"Profile of {self.group.name}"

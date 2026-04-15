@@ -39,3 +39,16 @@ def send_invitation_notification(self, invitation_id: str, invitation_link: str)
 
     except Exception as er:
         logger.warning("send_invitation_notification.error", error=er)
+
+
+@shared_task(
+    name="dj_authkit.apps.account_invitations.tasks.cleanup_invitations",
+    bind=True,
+)
+def cleanup_invitations(self):
+    try:
+        logger.info("Starting cleanup_invitations task...")
+        AccountInvitationService.cleanup_invitations()
+
+    except Exception as er:
+        logger.warning("cleanup_invitations.error", error=er)
